@@ -1,40 +1,43 @@
-define solr::core() {
+# == Definition: solr::core
+# This definition sets up solr config and data directories for each core
+#
+# === Parameters
+# - The $core to create
+#
+# === Actions
+# - Creates the solr web app directory for the core
+# - Copies over the config directory for the file
+# - Creates the data directory for the core
+#
+define solr::core(
+  $core_name = $title,
+) {
+  include solr::params
 
-  $solr_home = "/usr/share/solr"
+  $solr_home  = $solr::params::solr_home
 
-  #Create this core's config directory
-  exec { "mkdir-p-${title}":
-    path => ['/usr/bin', '/usr/sbin', '/bin'],
-    command => "mkdir -p ${solr_home}/${title}",
-    unless => "test -d ${solr_home}/${title}",
+  file { "${solr_home}/${core_name}":
+    ensure  => directory,
+    owner   => 'jetty',
+    group   => 'jetty',
+    require => File[$solr_home],
   }
 
   #Copy its config over
-  file { "core-${title}-conf":    
-    ensure => directory,
+  file { "${solr_home}/${core_name}/conf":
+    ensure  => directory,
     recurse => true,
-    path => "${solr_home}/${title}/conf",
-    source => "puppet:///modules/solr/conf/",
-    require => Exec["mkdir-p-${title}"],
-  }
-
-  #Copy the respective solrconfig.xml file
-  file { "solrconfig-${title}":
-    ensure => file,
-    path => "${solr_home}/${title}/conf/solrconfig.xml",
-    content => template('solr/solrconfig.xml.erb'),
-    require => File["core-${title}-conf"],
+    source  => 'puppet:///modules/solr/conf',
+    require => File["${solr_home}/${core_name}"],
   }
 
   #Finally, create the data directory where solr stores
   #its indexes with proper directory ownership/permissions.
-  file { "${title}-data-dir":
-    ensure => directory,
-    path => "/var/lib/solr/${title}",
-    owner => "jetty",
-    group => "jetty",
-    require => File["solrconfig-${title}"],
-    before => File['solr.xml'],
+  file { "/var/lib/solr/${core_name}":
+    ensure  => directory,
+    owner   => 'jetty',
+    group   => 'jetty',
+    require => File["${solr_home}/${core_name}/conf"],
   }
-  
+
 }

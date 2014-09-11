@@ -21,18 +21,18 @@ JETTY_PORT=8080
 # Timeout in seconds for the shutdown of all webapps
 #JETTY_SHUTDOWN=30
 
-# Additional arguments to pass to Jetty
+# Additional arguments to pass to Jetty    
 #JETTY_ARGS=
 
-# Extra options to pass to the JVM
-#JAVA_OPTIONS="-Xmx256m -Djava.awt.headless=true"
+# Extra options to pass to the JVM         
+JAVA_OPTIONS="-Dsolr.solr.home=/usr/share/solr $JAVA_OPTIONS"
 
 # Home of Java installation.
-# JAVA_HOME=/usr/lib/jvm/java-1.6.0-openjdk
+# JAVA_HOME=
 
 # The first existing directory is used for JAVA_HOME (if JAVA_HOME is not
 # defined in /etc/default/jetty). Should contain a list of space separated directories.
-#JDK_DIRS="/usr/lib/jvm/default-java /usr/lib/jvm/java-6-sun"
+JDK_DIRS="/usr/lib/jvm/default-java /usr/lib/jvm/java-6-sun"
 
 # Java compiler to use for translating JavaServer Pages (JSPs). You can use all
 # compilers that are accepted by Ant's build.compiler property.
