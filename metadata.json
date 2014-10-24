@@ -1,6 +1,6 @@
 {
     "name": "puppet-solr",
-    "version": "0.0.6.1",
+    "version": "0.1.1",
     "author": "schkovich",
     "license": "MIT",
     "summary": "A puppet module for solr.",
