@@ -59,7 +59,6 @@ class solr (
     default   => $mirror,
   }
 
-  class {'solr::install': } ->
   class {'solr::config':
     cores   => $my_cores,
     version => $my_version,

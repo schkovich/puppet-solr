@@ -28,11 +28,11 @@ JETTY_PORT=8080
 JAVA_OPTIONS="-Dsolr.solr.home=/usr/share/solr $JAVA_OPTIONS"
 
 # Home of Java installation.
-# JAVA_HOME=
+# JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
 # The first existing directory is used for JAVA_HOME (if JAVA_HOME is not
 # defined in /etc/default/jetty). Should contain a list of space separated directories.
-JDK_DIRS="/usr/lib/jvm/default-java /usr/lib/jvm/java-8-oracle"
+JDK_DIRS="/usr/lib/jvm/java-8-oracle /usr/lib/jvm/default-java"
 
 # Java compiler to use for translating JavaServer Pages (JSPs). You can use all
 # compilers that are accepted by Ant's build.compiler property.
