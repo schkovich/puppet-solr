@@ -16,26 +16,13 @@ class solr::config(
   $cores          = $solr::params::cores,
   $version        = $solr::params::solr_version,
   $mirror         = $solr::params::mirror_site,
-  $jetty_home     = $solr::params::jetty_home,
+  $jetty_base     = $solr::params::jetty_base,
   $solr_home      = $solr::params::solr_home,
+  $user           = $solr::params::user,
   ) inherits solr::params {
 
   $dl_name        = "solr-${version}.tgz"
   $download_url   = "${mirror}/${version}/${dl_name}"
-
-  #Copy the jetty config file
-  file { '/etc/default/jetty':
-    ensure  => file,
-    source  => 'puppet:///modules/solr/jetty-default',
-    require => Package['jetty'],
-  }
-
-  file { $solr_home:
-    ensure    => directory,
-    owner     => 'jetty',
-    group     => 'jetty',
-    require   => Package['jetty'],
-  }
 
   # download only if WEB-INF is not present and tgz file is not in /tmp:
   exec { 'solr-download':
@@ -45,7 +32,6 @@ class solr::config(
     creates   =>  "/tmp/${dl_name}",
     onlyif    =>  "test ! -d ${solr_home}/WEB-INF && test ! -f /tmp/${dl_name}",
     timeout   =>  0,
-    require   => File[$solr_home],
   }
 
   exec { 'extract-solr':
@@ -56,39 +42,71 @@ class solr::config(
     require   =>  Exec['solr-download'],
   }
 
-  # have to copy logging jars separately from solr 4.3 onwards
-  exec { 'copy-solr':
-    path      =>  ['/usr/bin', '/usr/sbin', '/bin'],
-    command   =>  "jar xvf /tmp/solr-${version}/dist/solr-${version}.war; cp /tmp/solr-${version}/example/lib/ext/*.jar WEB-INF/lib",
-    cwd       =>  $solr_home,
-    onlyif    =>  "test ! -d ${solr_home}/WEB-INF",
+  file {'webapps-tree':
+    path      => ["${jetty_base}/webapps", "${jetty_base}/webapps/lib", "${jetty_base}/webapps/lib/ext"],
+    ensure    => directory,
+    owner     => $user,
+    group     => $user,
     require   =>  Exec['extract-solr'],
   }
 
-  file { '/var/lib/solr':
+  file {"${jetty_base}/webapps/solr.war":
+    owner     => $user,
+    group     => $user,
+    source    => "/tmp/solr-${version}/dist/solr-${version}.war",
+    require   =>  File["webapps-tree"],
+  }
+
+  file {"${jetty_base}/webapps/lib/ext":
+    owner     => $user,
+    group     => $user,
+    source   => "/tmp/solr-${version}/example/lib/ext",
+    require   =>  File["${jetty_base}/webapps/solr.war"],
+  }
+
+  file {"${jetty_base}/webapps/solr.xml":
+    owner     => $user,
+    group     => $user,
+    source    => "/tmp/solr-${version}/contexts/solr-jetty-context.xml",
+    require   =>  File["${jetty_base}/webapps/lib/ext"],
+  }
+
+  file {'solr-tree':
+    path      => ["${solr_home}", "${solr_home}/contrib", "${solr_home}/dist"],
     ensure    => directory,
-    owner     => 'jetty',
-    group     => 'jetty',
-    mode      => '0700',
-    require   => Package['jetty'],
+    owner     => $user,
+    group     => $user,
+    require   =>  File["${jetty_base}/webapps/solr.xml"],
   }
 
-  file { "${solr_home}/solr.xml":
-    ensure    => 'file',
-    owner     => 'jetty',
-    group     => 'jetty',
-    content   => template('solr/solr.xml.erb'),
-    require   => File['/etc/default/jetty'],
+  file {"${solr_home}":
+    owner     => $user,
+    group     => $user,
+    source   => "/tmp/solr-${version}/example/solr",
+    require   =>File['solr-tree'],
   }
 
-  file { "${jetty_home}/webapps/solr":
-    ensure    => 'link',
-    target    => $solr_home,
-    require   => File["${solr_home}/solr.xml"],
+  file {"${solr_home}/contrib":
+    owner     => $user,
+    group     => $user,
+    source   => "/tmp/solr-${version}/contrib",
+    require   =>File['solr-tree'],
+  }
+
+  file {"${solr_home}/dist":
+    owner     => $user,
+    group     => $user,
+    source   => "/tmp/solr-${version}/dist",
+    require   =>File["${solr_home}/contrib"],
+  }
+
+  file {"${solr_home}/collection1":
+    ensure   => absent,
+    require   =>File["${solr_home}/dist"],
   }
 
   solr::core { $cores:
-    require   =>  File["${jetty_home}/webapps/solr"],
+    solr_home => $solr_home,
+    require   =>  File["${solr_home}/collection1"],
   }
 }
-

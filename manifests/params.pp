@@ -7,12 +7,10 @@
 #
 class solr::params {
 
-  $jetty_home    = '/usr/share/jetty'
+  $jetty_base    = '/usr/share/solr_base'
   $solr_home     = '/usr/share/solr'
   $solr_version  = '4.7.2'
   $mirror_site   = 'http://www.us.apache.org/dist/lucene/solr'
-  $data_dir      = '/var/lib/solr'
+  $user          = 'jetty'
   $cores         = ['default']
-
 }
-

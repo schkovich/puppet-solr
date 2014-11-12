@@ -1,32 +1,11 @@
 # == Class: solr::install
-# This class installs the required packages for jetty
+# This class installs the required packages
 #
 # === Actions
-# - Installs default jdk
-# - Installs jetty and extra libs
+# - Installs wget
 #
 class solr::install {
-
-  package { 'default-jdk':
-    ensure  => present,
-  }
-
-  package { 'jetty':
-    ensure  => present,
-    require => Package['default-jdk'],
-  }
-
-  package { 'libjetty-extra':
-    ensure  => present,
-    require => Package['jetty'],
-  }
-
   package { 'wget':
     ensure  => present,
   }
-
-  package { 'curl':
-    ensure  => present,
-  }
 }
-

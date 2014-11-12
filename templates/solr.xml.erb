@@ -2,7 +2,7 @@
  <cores adminPath="/admin/cores">
   <% @cores.each do |core| %>
     <core name="<%= core -%>" instanceDir="<%= core -%>"
-          dataDir="/var/lib/solr/<%= core -%>" />
+          dataDir="<%= data_dir -%>/<%= core -%>" />
   <% end %>
  </cores>
 </solr>

@@ -37,34 +37,55 @@
 #
 
 class solr (
-  $cores      = 'UNSET',
-  $version    = 'UNSET',
-  $mirror     = 'UNSET',
+  $my_cores   = 'UNSET',
+  $my_version = 'UNSET',
+  $my_mirror  = 'UNSET',
+  $my_jetty   = 'UNSET',
+  $my_solr    = 'UNSET',
+  $my_user    = 'UNSET',
 ) {
 
   include solr::params
 
-  $my_cores = $cores ? {
+  $cores = $my_cores ? {
     'UNSET'   => $::solr::params::cores,
-    default   => $cores,
+    default   => $my_cores,
   }
 
-  $my_version = $version ? {
+  $version = $my_version ? {
     'UNSET'   => $::solr::params::solr_version,
-    default   => $version,
+    default   => $my_version,
   }
 
-  $my_mirror = $version ? {
+  $mirror = $my_mirror ? {
     'UNSET'   => $::solr::params::mirror_site,
-    default   => $mirror,
+    default   => $my_mirror,
   }
 
+  $jetty = $my_jetty ? {
+    'UNSET'   => $::solr::params::jetty_base,
+    default   => $my_jetty,
+  }
+
+  $solr = $my_solr ? {
+    'UNSET'   => $::solr::params::solr_home,
+    default   => $my_solr,
+  }
+
+  $user = $my_user ? {
+    'UNSET'   => $::solr::params::user,
+    default   => $my_user,
+  }
+
+  class {'solr::install': } ->
   class {'solr::config':
-    cores   => $my_cores,
-    version => $my_version,
-    mirror  => $my_mirror,
-  } ~>
-  class {'solr::service': } ->
+    cores       => $cores,
+    version     => $version,
+    mirror      => $mirror,
+    jetty_base  => $jetty,
+    solr_home   => $solr,
+    user        => $user
+  } ->
   Class['solr']
 
 }
