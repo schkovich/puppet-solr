@@ -1,9 +1,9 @@
 {
     "name": "puppet-solr",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": "schkovich",
     "license": "MIT",
-    "summary": "A puppet module for solr.",
+    "summary": "A puppet module to manage Solr. No bullshit. Just Solr. Install Java, Jetty or Tomcat as needed.",
     "source": "git@github.com:schkovich/puppet-solr.git",
     "project_page": "(https://github.com/schkovich/puppet-solr.git)",
     "issues_url": "",
