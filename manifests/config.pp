@@ -58,7 +58,7 @@ class solr::config(
   file {"${jetty_base}/webapps/solr.xml":
     owner     => $user,
     group     => $user,
-    source    => "/tmp/solr-${version}/contexts/solr-jetty-context.xml",
+    source    => "/tmp/solr-${version}/example/contexts/solr-jetty-context.xml",
     require   =>  File["${jetty_base}/webapps/solr.war"],
   }
 
