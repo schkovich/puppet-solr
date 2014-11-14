@@ -42,19 +42,17 @@ class solr::config(
     require   =>  Exec['solr-download'],
   }
 
-  file {'webapps-tree':
-    path      => ["${jetty_base}/webapps", "${jetty_base}/webapps/lib", "${jetty_base}/webapps/lib/ext"],
+  file {["${jetty_base}/webapps", "${jetty_base}/webapps/lib", "${jetty_base}/webapps/lib/ext"]:
     ensure    => directory,
     owner     => $user,
     group     => $user,
     require   =>  Exec['extract-solr'],
   }
-
+  ->
   file {"${jetty_base}/webapps/solr.war":
     owner     => $user,
     group     => $user,
     source    => "/tmp/solr-${version}/dist/solr-${version}.war",
-    require   =>  File["webapps-tree"],
   }
 
   file {"${jetty_base}/webapps/lib/ext":
@@ -71,19 +69,17 @@ class solr::config(
     require   =>  File["${jetty_base}/webapps/lib/ext"],
   }
 
-  file {'solr-tree':
-    path      => ["${solr_home}", "${solr_home}/contrib", "${solr_home}/dist"],
+  file {["${solr_home}", "${solr_home}/contrib", "${solr_home}/dist"]:
     ensure    => directory,
     owner     => $user,
     group     => $user,
     require   =>  File["${jetty_base}/webapps/solr.xml"],
   }
-
+  ->
   file {"${solr_home}":
     owner     => $user,
     group     => $user,
     source   => "/tmp/solr-${version}/example/solr",
-    require   =>File['solr-tree'],
   }
 
   file {"${solr_home}/contrib":
