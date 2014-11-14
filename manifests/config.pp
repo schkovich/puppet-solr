@@ -107,6 +107,7 @@ class solr::config(
 
   solr::core { $cores:
     solr_home => $solr_home,
+    user      => $user,
     require   =>  File["${solr_home}/collection1"],
   }
 }
