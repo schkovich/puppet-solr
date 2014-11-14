@@ -19,7 +19,7 @@ define solr::core(
     ensure  => directory,
     owner   => $user,
     group   => $user,
-    require => File["${solr_home}/cores"],
+    require => File["${solr_home}/collection1"],
   }
   ->
   # Exploration of the core tree terminates when a file named core.properties is encountered.

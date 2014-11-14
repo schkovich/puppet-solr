@@ -42,7 +42,7 @@ class solr::config(
     require   =>  Exec['solr-download'],
   }
 
-  file {["${jetty_base}/webapps", "${jetty_base}/webapps/lib", "${jetty_base}/webapps/lib/ext"]:
+  file {["${jetty_base}", "${jetty_base}/webapps", "${jetty_base}/webapps/lib", "${jetty_base}/webapps/lib/ext"]:
     ensure    => directory,
     owner     => $user,
     group     => $user,
@@ -62,7 +62,7 @@ class solr::config(
     require   =>  File["${jetty_base}/webapps/solr.war"],
   }
 
-  file {["${solr_home}", "${solr_home}/contrib", "${solr_home}/dist"]:
+  file {["${solr_home}", "${solr_home}/contrib", "${solr_home}/dist", "${solr_home}/cores"]:
     ensure    => directory,
     owner     => $user,
     group     => $user,
@@ -71,12 +71,6 @@ class solr::config(
   ->
   file {"${solr_home}/collection1":
     ensure   => absent,
-  }
-  ->
-  file { "${solr_home}/cores":
-    ensure  => directory,
-    owner   => $user,
-    group   => $user,
   }
   ->
   solr::core { $cores:
