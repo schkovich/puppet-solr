@@ -29,7 +29,6 @@ define solr::core(
     content => "name=${core}",
     owner   => $user,
     group   => $user,
-    require => File["core-roots"],
   }
 
 }
