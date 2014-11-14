@@ -15,17 +15,16 @@ define solr::core(
   $user,
 ) {
 
-  file { "${core}":
-    path    => ["${solr_home}/cores", "${solr_home}/cores/${core}"],
+  file { ["${solr_home}/cores", "${solr_home}/cores/${core}"]:
     ensure  => directory,
     owner   => $user,
     group   => $user,
     require => File[$solr_home],
   }
-
+  ->
   # Exploration of the core tree terminates when a file named core.properties is encountered.
   # @see: https://wiki.apache.org/solr/Core%20Discovery%20(4.4%20and%20beyond).
-  file { "${solr_home}/${core}/core.properties":
+  file { "${solr_home}/cores/${core}/core.properties":
     ensure  => file,
     content => "name=${core}",
     owner   => $user,
