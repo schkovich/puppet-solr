@@ -15,7 +15,7 @@ define solr::core(
   $user,
 ) {
 
-  file { 'cores-root':
+  file { "${core}":
     path    => ["${solr_home}/cores", "${solr_home}/cores/${core}"],
     ensure  => directory,
     owner   => $user,
