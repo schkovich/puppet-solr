@@ -69,29 +69,8 @@ class solr::config(
     require   =>  File["${jetty_base}/webapps/solr.xml"],
   }
   ->
-  file {"${solr_home}":
-    owner     => $user,
-    group     => $user,
-    source   => "/tmp/solr-${version}/example/solr",
-  }
-
-  file {"${solr_home}/contrib":
-    owner     => $user,
-    group     => $user,
-    source   => "/tmp/solr-${version}/contrib",
-    require   =>File['solr-tree'],
-  }
-
-  file {"${solr_home}/dist":
-    owner     => $user,
-    group     => $user,
-    source   => "/tmp/solr-${version}/dist",
-    require   =>File["${solr_home}/contrib"],
-  }
-
   file {"${solr_home}/collection1":
     ensure   => absent,
-    require   =>File["${solr_home}/dist"],
   }
 
   solr::core { $cores:
