@@ -72,7 +72,13 @@ class solr::config(
   file {"${solr_home}/collection1":
     ensure   => absent,
   }
-
+  ->
+  file { "${solr_home}/cores":
+    ensure  => directory,
+    owner   => $user,
+    group   => $user,
+  }
+  ->
   solr::core { $cores:
     solr_home => $solr_home,
     user      => $user,
