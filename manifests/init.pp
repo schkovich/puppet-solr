@@ -37,12 +37,13 @@
 #
 
 class solr (
-  $my_cores   = 'UNSET',
-  $my_version = 'UNSET',
-  $my_mirror  = 'UNSET',
-  $my_jetty   = 'UNSET',
-  $my_solr    = 'UNSET',
-  $my_user    = 'UNSET',
+  $my_cores     = 'UNSET',
+  $my_version   = 'UNSET',
+  $my_mirror    = 'UNSET',
+  $my_jetty     = 'UNSET',
+  $my_solr      = 'UNSET',
+  $my_user      = 'UNSET',
+  $my_tempdata  = 'UNSET',
 ) {
 
   include solr::params
@@ -77,15 +78,23 @@ class solr (
     default   => $my_user,
   }
 
-  class {'solr::install': } ->
+  $tempdata = $my_tempdata ? {
+    'UNSET'   => $::solr::params::user,
+    default   => $my_tempdata,
+  }
+
+  class {'solr::install': }
+  ->
   class {'solr::config':
     cores       => $cores,
     version     => $version,
     mirror      => $mirror,
     jetty_base  => $jetty,
     solr_home   => $solr,
-    user        => $user
-  } ->
+    user        => $user,
+    tempdata    => $user,
+  }
+  ->
   Class['solr']
 
 }

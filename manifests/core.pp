@@ -13,13 +13,41 @@ define solr::core(
   $core = $title,
   $solr_home,
   $user,
+  $tempdata,
 ) {
 
-  file { "${solr_home}/cores/${core}":
+  file { ["${solr_home}/cores/${core}", "${solr_home}/cores/${core}/config"]:
     ensure  => directory,
     owner   => $user,
     group   => $user,
-    require => File["${solr_home}/collection1"],
+  }
+  ->
+  file { "${solr_home}/cores/${core}/config/schema.xml":
+    ensure  => file,
+    source => "${tempdata}/${core}/schema.xml",
+    owner   => $user,
+    group   => $user,
+  }
+  ->
+  file { "${solr_home}/cores/${core}/config/solrconfig.xml":
+    ensure  => file,
+    source => "${tempdata}/${core}/solrconfig.xml",
+    owner   => $user,
+    group   => $user,
+  }
+  ->
+  file { "${solr_home}/cores/${core}/config/name_synonyms.txt":
+    ensure  => file,
+    source => "${tempdata}/${core}/name_synonyms.txt",
+    owner   => $user,
+    group   => $user,
+  }
+  ->
+  file { "${solr_home}/cores/${core}/config/stop_words.txt":
+    ensure  => file,
+    source => "${tempdata}/${core}/stop_words.txt",
+    owner   => $user,
+    group   => $user,
   }
   ->
   # Exploration of the core tree terminates when a file named core.properties is encountered.

@@ -19,6 +19,7 @@ class solr::config(
   $jetty_base     = $solr::params::jetty_base,
   $solr_home      = $solr::params::solr_home,
   $user           = $solr::params::user,
+  $tempdata       = 'UNSET',
   ) inherits solr::params {
 
   $dl_name        = "solr-${version}.tgz"
@@ -55,7 +56,7 @@ class solr::config(
     source    => "/tmp/solr-${version}/dist/solr-${version}.war",
   }
 
-  file {"${jetty_base}/webapps/solr.xml":
+  file {"${jetty_base}/webapps/context.xml":
     owner     => $user,
     group     => $user,
     source    => "/tmp/solr-${version}/example/contexts/solr-jetty-context.xml",
@@ -76,6 +77,7 @@ class solr::config(
   solr::core { $cores:
     solr_home => $solr_home,
     user      => $user,
+    tmpdata   => $tempdata,
     require   =>  File["${solr_home}/collection1"],
   }
 }
