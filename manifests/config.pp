@@ -63,11 +63,32 @@ class solr::config(
     require   =>  File["${jetty_base}/webapps/solr.war"],
   }
 
-  file {["${solr_home}", "${solr_home}/contrib", "${solr_home}/dist", "${solr_home}/cores"]:
+  file {"${solr_home}":
+    ensure  => directory,
+    owner   => $user,
+    group   => $user,
+    source  => "/tmp/solr-${version}/example/solr",
+    require   =>  File["${jetty_base}/webapps/context.xml"],
+  }
+  ->
+  file {"${solr_home}/contrib":
+    ensure  => directory,
+    owner     => $user,
+    group     => $user,
+    source   => "/tmp/solr-${version}/contrib",
+  }
+  ->
+  file {"${solr_home}/dist":
+    ensure  => directory,
+    owner     => $user,
+    group     => $user,
+    source   => "/tmp/solr-${version}/dist",
+  }
+  ->
+  file {"${solr_home}/cores":
     ensure    => directory,
     owner     => $user,
     group     => $user,
-    require   =>  File["${jetty_base}/webapps/context.xml"],
   }
   ->
   file {"${solr_home}/collection1":
