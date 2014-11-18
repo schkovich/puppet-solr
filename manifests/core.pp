@@ -24,28 +24,28 @@ define solr::core(
   ->
   file { "${solr_home}/cores/${core}/config/schema.xml":
     ensure  => file,
-    source => "${tempdata}/${core}/schema.xml",
+    source => "${tempdata}/cores/${core}/schema.xml",
     owner   => $user,
     group   => $user,
   }
   ->
   file { "${solr_home}/cores/${core}/config/solrconfig.xml":
     ensure  => file,
-    source => "${tempdata}/${core}/solrconfig.xml",
+    source => "${tempdata}/cores/${core}/solrconfig.xml",
     owner   => $user,
     group   => $user,
   }
   ->
   file { "${solr_home}/cores/${core}/config/name_synonyms.txt":
     ensure  => file,
-    source => "${tempdata}/${core}/name_synonyms.txt",
+    source => "${tempdata}/cores/${core}/name_synonyms.txt",
     owner   => $user,
     group   => $user,
   }
   ->
   file { "${solr_home}/cores/${core}/config/stop_words.txt":
     ensure  => file,
-    source => "${tempdata}/${core}/stop_words.txt",
+    source => "${tempdata}/cores/${core}/stop_words.txt",
     owner   => $user,
     group   => $user,
   }
