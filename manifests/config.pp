@@ -72,14 +72,20 @@ class solr::config(
   }
   ->
   file {"${solr_home}/contrib":
-    ensure  => directory,
+    ensure => directory, # so make this a directory
+    recurse => true, # enable recursive directory management
+    purge => true, # purge all unmanaged junk
+    force => true, # also purge subdirs and links etc.
     owner     => $user,
     group     => $user,
     source   => "/tmp/solr-${version}/contrib",
   }
   ->
   file {"${solr_home}/dist":
-    ensure  => directory,
+    ensure => directory, # so make this a directory
+    recurse => true, # enable recursive directory management
+    purge => true, # purge all unmanaged junk
+    force => true, # also purge subdirs and links etc.
     owner     => $user,
     group     => $user,
     source   => "/tmp/solr-${version}/dist",
