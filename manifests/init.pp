@@ -92,7 +92,7 @@ class solr (
     jetty_base  => $jetty_base,
     solr_home   => $solr,
     user        => $user,
-    tempdata    => $user,
+    tempdata    => $tempdata,
   }
   ->
   Class['solr']
