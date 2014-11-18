@@ -77,7 +77,7 @@ class solr::config(
   solr::core { $cores:
     solr_home => $solr_home,
     user      => $user,
-    tmpdata   => $tempdata,
+    tempdata   => $tempdata,
     require   =>  File["${solr_home}/collection1"],
   }
 }
