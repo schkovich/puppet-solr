@@ -67,7 +67,7 @@ class solr::config(
     ensure    => directory,
     owner     => $user,
     group     => $user,
-    require   =>  File["${jetty_base}/webapps/solr.xml"],
+    require   =>  File["${jetty_base}/webapps/context.xml"],
   }
   ->
   file {"${solr_home}/collection1":
