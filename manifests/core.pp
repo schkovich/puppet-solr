@@ -16,34 +16,34 @@ define solr::core(
   $tempdata,
 ) {
 
-  file { ["${solr_home}/cores/${core}", "${solr_home}/cores/${core}/config"]:
+  file { ["${solr_home}/cores/${core}", "${solr_home}/cores/${core}/conf"]:
     ensure  => directory,
     owner   => $user,
     group   => $user,
   }
   ->
-  file { "${solr_home}/cores/${core}/config/schema.xml":
+  file { "${solr_home}/cores/${core}/conf/schema.xml":
     ensure  => file,
     source => "${tempdata}/cores/${core}/schema.xml",
     owner   => $user,
     group   => $user,
   }
   ->
-  file { "${solr_home}/cores/${core}/config/solrconfig.xml":
+  file { "${solr_home}/cores/${core}/conf/solrconfig.xml":
     ensure  => file,
     source => "${tempdata}/cores/${core}/solrconfig.xml",
     owner   => $user,
     group   => $user,
   }
   ->
-  file { "${solr_home}/cores/${core}/config/name_synonyms.txt":
+  file { "${solr_home}/cores/${core}/conf/name_synonyms.txt":
     ensure  => file,
     source => "${tempdata}/cores/${core}/name_synonyms.txt",
     owner   => $user,
     group   => $user,
   }
   ->
-  file { "${solr_home}/cores/${core}/config/stop_words.txt":
+  file { "${solr_home}/cores/${core}/conf/stop_words.txt":
     ensure  => file,
     source => "${tempdata}/cores/${core}/stop_words.txt",
     owner   => $user,
