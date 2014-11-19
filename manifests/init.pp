@@ -42,6 +42,7 @@ class solr (
   $my_mirror      = 'UNSET',
   $my_jetty_base  = 'UNSET',
   $my_solr        = 'UNSET',
+  $my_cores_root  = 'UNSET',
   $my_user        = 'UNSET',
   $my_tempdata    = 'UNSET',
 ) {
@@ -73,6 +74,11 @@ class solr (
     default   => $my_solr,
   }
 
+  $cores_root = $my_cores_root ? {
+    'UNSET'   => $::solr::params::solr_home,
+    default   => $my_cores_root,
+  }
+
   $user = $my_user ? {
     'UNSET'   => $::solr::params::user,
     default   => $my_user,
@@ -91,6 +97,7 @@ class solr (
     mirror      => $mirror,
     jetty_base  => $jetty_base,
     solr_home   => $solr,
+    cores_root  => $cores_root,
     user        => $user,
     tempdata    => $tempdata,
   }

@@ -18,6 +18,7 @@ class solr::config(
   $mirror         = $solr::params::mirror_site,
   $jetty_base     = $solr::params::jetty_base,
   $solr_home      = $solr::params::solr_home,
+  $cores_root     = $solr::params::solr_home,
   $user           = $solr::params::user,
   $tempdata       = 'UNSET',
   ) inherits solr::params {
@@ -69,6 +70,16 @@ class solr::config(
     group   => $user,
     source  => "/tmp/solr-${version}/example/solr",
     require   =>  File["${jetty_base}/webapps/context.xml"],
+  }
+  ->
+  augeas{ "cores_root":
+    incl => "${solr_home}/solr.xml",
+    lens => "Xml.lns",
+    context => "${solr_home}/solr.xml/solr",
+    changes => [
+      'set str/#attribute/name coreRootDirectory',
+      "set str/#text ${cores_root}",
+    ]
   }
   ->
   file {"${solr_home}/contrib":
