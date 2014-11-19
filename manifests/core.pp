@@ -43,9 +43,23 @@ define solr::core(
     group   => $user,
   }
   ->
-  file { "${solr_home}/cores/${core}/conf/stop_words.txt":
+  file { "${solr_home}/cores/${core}/conf/protwords.txt":
     ensure  => file,
-    source => "${tempdata}/cores/${core}/stop_words.txt",
+    source => "${tempdata}/cores/${core}/protwords.txt",
+    owner   => $user,
+    group   => $user,
+  }
+  ->
+  file { "${solr_home}/cores/${core}/conf/stopwords.txt":
+    ensure  => file,
+    source => "${tempdata}/cores/${core}/stopwords.txt",
+    owner   => $user,
+    group   => $user,
+  }
+  ->
+  file { "${solr_home}/cores/${core}/conf/synonyms.txt":
+    ensure  => file,
+    source => "${tempdata}/cores/${core}/synonyms.txt",
     owner   => $user,
     group   => $user,
   }
