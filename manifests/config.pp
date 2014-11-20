@@ -35,20 +35,28 @@ class solr::config(
     onlyif    =>  "test ! -d ${solr_home}/WEB-INF && test ! -f /tmp/${dl_name}",
     timeout   =>  0,
   }
-
+  ->
   exec { 'extract-solr':
     path    =>  ['/usr/bin', '/usr/sbin', '/bin'],
     command =>  "tar xzvf ${dl_name}",
     cwd     =>  '/tmp',
     onlyif  =>  "test -f /tmp/${dl_name} && test ! -d /tmp/solr-${version}",
-    require =>  Exec['solr-download'],
   }
-
-  file {["${jetty_base}", "${jetty_base}/webapps", "${jetty_base}/webapps/lib", "${jetty_base}/webapps/lib/ext"]:
+  ->
+  file {["${jetty_base}", "${jetty_base}/lib", "${jetty_base}/webapps"]:
     ensure    => directory,
     owner     => $user,
     group     => $user,
-    require   =>  Exec['extract-solr'],
+  }
+  ->
+  file {"${jetty_base}/lib/ext":
+    ensure => directory, # so make this a directory
+    recurse => true, # enable recursive directory management
+    purge => true, # purge all unmanaged junk
+    force => true, # also purge subdirs and links etc.
+    source  => "/tmp/solr-${version}/example/lib/ext",
+    owner     => $user,
+    group     => $user,
   }
   ->
   file {"${jetty_base}/webapps/solr.war":
@@ -56,20 +64,21 @@ class solr::config(
     group     => $user,
     source    => "/tmp/solr-${version}/dist/solr-${version}.war",
   }
-
+  ->
   file {"${jetty_base}/webapps/context.xml":
     owner     => $user,
     group     => $user,
     source    => "/tmp/solr-${version}/example/contexts/solr-jetty-context.xml",
-    require   =>  File["${jetty_base}/webapps/solr.war"],
   }
-
+  ->
   file {"${solr_home}":
-    ensure  => directory,
+    ensure => directory, # so make this a directory
+    recurse => true, # enable recursive directory management
+    purge => true, # purge all unmanaged junk
+    force => true, # also purge subdirs and links etc.
     owner   => $user,
     group   => $user,
     source  => "/tmp/solr-${version}/example/solr",
-    require   =>  File["${jetty_base}/webapps/context.xml"],
   }
   ->
   augeas{ "cores_root":
