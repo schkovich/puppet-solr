@@ -71,6 +71,16 @@ class solr::config(
     source    => "/tmp/solr-${version}/example/contexts/solr-jetty-context.xml",
   }
   ->
+  augeas{ "context":
+    incl => "${jetty_base}/webapps/context.xml",
+    context => "/files/${jetty_base}/webapps/context.xml/Configure",
+    lens => "Xml.lns",
+    changes => [
+      'set Set[#attribute/name = "war"]/SystemProperty/#attribute/name "jetty.base"',
+      'set Set[#attribute/name = "tempDirectory"]/Property/#attribute/name "jetty.base"',
+    ]
+  }
+  ->
   file {"${solr_home}":
     ensure => directory, # so make this a directory
     recurse => true, # enable recursive directory management
@@ -84,7 +94,7 @@ class solr::config(
   augeas{ "cores_root":
     incl => "${solr_home}/solr.xml",
     lens => "Xml.lns",
-    context => "${solr_home}/solr.xml/solr",
+    context => "/files/${solr_home}/solr.xml/solr",
     changes => [
       'set str/#attribute/name coreRootDirectory',
       "set str/#text ${cores_root}",
