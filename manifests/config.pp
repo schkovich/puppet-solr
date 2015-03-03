@@ -26,16 +26,31 @@ class solr::config(
   $dl_name        = "solr-${version}.tgz"
   $download_url   = "${mirror}/${version}/${dl_name}"
 
+  #Copy the jetty config file
+  file { '/etc/default/jetty':
+    ensure  => file,
+    source  => 'puppet:///modules/solr/jetty-default',
+    require => Package['jetty'],
+  }
+
+  file { $solr_home:
+    ensure  => directory,
+    owner   => 'jetty',
+    group   => 'jetty',
+    require => Package['jetty'],
+  }
+
   # download only if WEB-INF is not present and tgz file is not in /tmp:
   exec { 'solr-download':
-    path      =>  ['/usr/bin', '/usr/sbin', '/bin'],
-    command   =>  "wget ${download_url}",
-    cwd       =>  '/tmp',
-    creates   =>  "/tmp/${dl_name}",
-    onlyif    =>  "test ! -d ${solr_home}/WEB-INF && test ! -f /tmp/${dl_name}",
-    timeout   =>  0,
+    path    => [ '/bin', '/sbin' , '/usr/bin', '/usr/sbin', '/usr/local/bin' ],
+    command =>  "wget ${download_url}",
+    cwd     =>  '/tmp',
+    creates =>  "/tmp/${dl_name}",
+    onlyif  =>  "test ! -d ${solr_home}/WEB-INF && test ! -f /tmp/${dl_name}",
+    timeout =>  0,
+    require => File[$solr_home],
   }
-  ->
+
   exec { 'extract-solr':
     path    =>  ['/usr/bin', '/usr/sbin', '/bin'],
     command =>  "tar xzvf ${dl_name}",
@@ -47,6 +62,7 @@ class solr::config(
     ensure    => directory,
     owner     => $user,
     group     => $user,
+    require =>  Exec['extract-solr'],
   }
   ->
   file {"${jetty_base}/lib/ext":

@@ -8,4 +8,8 @@ class solr::install {
   package { 'wget':
     ensure  => present,
   }
+
+  package { 'curl':
+    ensure  => present,
+  }
 }
